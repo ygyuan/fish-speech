@@ -933,7 +933,9 @@ if __name__ == "__main__":
     import uvicorn
 
     args = parse_args()
-    host, port = args.listen.split(":")
+    #host, port = args.listen.split(":")
+    host = "21.6.91.18"
+    port = "8080"
     uvicorn.run(
         "tools.api:app",
         host=host,

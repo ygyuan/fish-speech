@@ -32,7 +32,7 @@ def audio_request():
     ):
         with client.stream(
             "POST",
-            "http://127.0.0.1:8080/v1/tts",
+            "http://21.6.91.18:8080/v1/tts",
             content=ormsgpack.packb(request, option=ormsgpack.OPT_SERIALIZE_PYDANTIC),
             headers={
                 "authorization": f"Bearer {api_key}",

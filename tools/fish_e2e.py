@@ -95,8 +95,10 @@ client = httpx.AsyncClient(
 
 class FishE2EAgent:
     def __init__(self):
-        self.llm_url = "http://localhost:8080/v1/chat"
-        self.vqgan_url = "http://localhost:8080"
+        #self.llm_url = "http://localhost:8080/v1/chat"
+        #self.vqgan_url = "http://localhost:8080"
+        self.llm_url = "http://21.6.91.18:8080/v1/chat"
+        self.vqgan_url = "http://21.6.91.18:8080"
         self.client = httpx.AsyncClient(timeout=None)
 
     async def get_codes(self, audio_data, sample_rate):
