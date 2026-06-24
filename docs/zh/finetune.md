@@ -37,13 +37,7 @@
 确保你已经下载了 vqgan 权重, 如果没有, 请运行以下命令:
 
 ```bash
-huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
-```
-
-对于中国大陆用户, 可使用 mirror 下载.
-
-```bash
-HF_ENDPOINT=https://hf-mirror.com huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
+huggingface-cli download fishaudio/openaudio-s1-mini --local-dir checkpoints/openaudio-s1-mini
 ```
 
 随后可运行以下命令来提取语义 token:
@@ -51,8 +45,8 @@ HF_ENDPOINT=https://hf-mirror.com huggingface-cli download fishaudio/fish-speech
 ```bash
 python tools/vqgan/extract_vq.py data \
     --num-workers 1 --batch-size 16 \
-    --config-name "firefly_gan_vq" \
-    --checkpoint-path "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
+    --config-name "modded_dac_vq" \
+    --checkpoint-path "checkpoints/s2-pro/codec.pth"
 ```
 
 !!! note
@@ -96,13 +90,7 @@ python tools/llama/build_dataset.py \
 同样的, 请确保你已经下载了 `LLAMA` 权重, 如果没有, 请运行以下命令:
 
 ```bash
-huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
-```
-
-对于中国大陆用户, 可使用 mirror 下载.
-
-```bash
-HF_ENDPOINT=https://hf-mirror.com huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
+huggingface-cli download fishaudio/s2-pro --local-dir checkpoints/s2-pro
 ```
 
 最后, 你可以运行以下命令来启动微调:
@@ -130,9 +118,9 @@ python fish_speech/train.py --config-name text2semantic_finetune \
 ```bash
 python tools/llama/merge_lora.py \
 	--lora-config r_8_alpha_16 \
-	--base-weight checkpoints/fish-speech-1.4 \
+	--base-weight checkpoints/s2-pro \
 	--lora-weight results/$project/checkpoints/step_000000010.ckpt \
-	--output checkpoints/fish-speech-1.4-yth-lora/
+	--output checkpoints/s2-pro-yth-lora/
 ```
 
 !!! note

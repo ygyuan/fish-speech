@@ -1,114 +1,98 @@
 # Inferência
 
-Suporte para inferência por linha de comando, API HTTP e interface web (WebUI).
+O modelo Fish Audio S2 requer uma grande quantidade de VRAM. Recomendamos o uso de uma GPU com pelo menos 24GB para inferência.
 
-!!! note
-    O processo de raciocínio, em geral, consiste em várias partes:
+## Baixar Pesos
 
-    1. Codificar cerca de 10 segundos de voz usando VQGAN.
-    2. Inserir os tokens semânticos codificados e o texto correspondente no modelo de linguagem como um exemplo.
-    3. Dado um novo trecho de texto, fazer com que o modelo gere os tokens semânticos correspondentes.
-    4. Inserir os tokens semânticos gerados no VITS / VQGAN para decodificar e gerar a voz correspondente.
+Primeiro, você precisa baixar os pesos do modelo:
+
+```bash
+hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
+```
 
 ## Inferência por Linha de Comando
 
-Baixe os modelos `vqgan` e `llama` necessários do nosso repositório Hugging Face.
-
-```bash
-huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
-```
-
-### 1. Gerar prompt a partir da voz:
-
 !!! note
-    Se quiser permitir que o modelo escolha aleatoriamente um timbre de voz, pule esta etapa.
+    Se você planeja deixar o modelo escolher aleatoriamente um timbre de voz, pode pular esta etapa.
+
+### 1. Obter tokens VQ do áudio de referência
 
 ```bash
-python tools/vqgan/inference.py \
-    -i "paimon.wav" \
-    --checkpoint-path "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
+python fish_speech/models/dac/inference.py \
+    -i "test.wav" \
+    --checkpoint-path "checkpoints/s2-pro/codec.pth"
 ```
 
-Você deverá obter um arquivo `fake.npy`.
+Você deve obter um `fake.npy` e um `fake.wav`.
 
-### 2. Gerar tokens semânticos a partir do texto:
+### 2. Gerar tokens Semânticos a partir do texto:
 
 ```bash
-python tools/llama/generate.py \
+python fish_speech/models/text2semantic/inference.py \
     --text "O texto que você deseja converter" \
     --prompt-text "Seu texto de referência" \
     --prompt-tokens "fake.npy" \
-    --checkpoint-path "checkpoints/fish-speech-1.4" \
-    --num-samples 2 \
-    --compile
+    # --compile
 ```
 
-Este comando criará um arquivo `codes_N` no diretório de trabalho, onde N é um número inteiro começando de 0.
+Este comando criará um arquivo `codes_N` no diretório de trabalho, onde N é um número inteiro começando em 0.
 
 !!! note
-    Use `--compile` para fundir kernels CUDA para ter uma inferência mais rápida (~30 tokens/segundo -> ~500 tokens/segundo).
-    Mas, se não planeja usar a aceleração CUDA, comente o parâmetro `--compile`.
+    Você pode querer usar `--compile` para fundir kernels CUDA para uma inferência mais rápida. No entanto, recomendamos usar nossa otimização de aceleração de inferência sglang.
+    Da mesma forma, se você não planeja usar aceleração, pode comentar o parâmetro `--compile`.
 
 !!! info
-    Para GPUs que não suportam bf16, pode ser necessário usar o parâmetro `--half`.
+    Para GPUs que não suportam bf16, você pode precisar usar o parâmetro `--half`.
 
 ### 3. Gerar vocais a partir de tokens semânticos:
 
-#### Decodificador VQGAN
-
 ```bash
-python tools/vqgan/inference.py \
+python fish_speech/models/dac/inference.py \
     -i "codes_0.npy" \
-    --checkpoint-path "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
 ```
 
-## Inferência por API HTTP
+Depois disso, você obterá um arquivo `fake.wav`.
 
-Fornecemos uma API HTTP para inferência. O seguinte comando pode ser usado para iniciar o servidor:
+## Inferência WebUI
+
+### 1. Gradio WebUI
+
+Para manter a compatibilidade, mantemos a interface Gradio WebUI anterior.
 
 ```bash
-python -m tools.api \
-    --listen 0.0.0.0:8080 \
-    --llama-checkpoint-path "checkpoints/fish-speech-1.4" \
-    --decoder-checkpoint-path "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth" \
-    --decoder-config-name firefly_gan_vq
+python tools/run_webui.py # --compile se você precisar de aceleração
 ```
 
-> Para acelerar a inferência, adicione o parâmetro `--compile`.
+### 2. Awesome WebUI
 
-Depois disso, é possível visualizar e testar a API em http://127.0.0.1:8080/.
+A Awesome WebUI é uma interface web moderna baseada em TypeScript, oferecendo funcionalidades mais ricas e uma melhor experiência do usuário.
 
-Abaixo está um exemplo de envio de uma solicitação usando `tools/post_api.py`.
+**Construir a WebUI:**
+
+Você precisa ter o Node.js e o npm instalados em seu computador local ou servidor.
+
+1. Entre no diretório `awesome_webui`:
+   ```bash
+   cd awesome_webui
+   ```
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Construa a WebUI:
+   ```bash
+   npm run build
+   ```
+
+**Iniciar o Servidor Backend:**
+
+Após a construção da WebUI, retorne ao diretório raiz do projeto e inicie o servidor API:
 
 ```bash
-python -m tools.post_api \
-    --text "Texto a ser inserido" \
-    --reference_audio "Caminho para o áudio de referência" \
-    --reference_text "Conteúdo de texto do áudio de referência" \
-    --streaming True
+python tools/api_server.py --listen 0.0.0.0:8888 --compile
 ```
 
-O comando acima indica a síntese do áudio desejada de acordo com as informações do áudio de referência e a retorna em modo de streaming.
+**Acesso:**
 
-!!! info
-    Para aprender mais sobre parâmetros disponíveis, você pode usar o comando `python -m tools.post_api -h`
-
-## Inferência por WebUI
-
-Para iniciar a WebUI de Inferência execute o seguinte comando:
-
-```bash
-python -m tools.webui \
-    --llama-checkpoint-path "checkpoints/fish-speech-1.4" \
-    --decoder-checkpoint-path "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth" \
-    --decoder-config-name firefly_gan_vq
-```
-> Para acelerar a inferência, adicione o parâmetro `--compile`.
-
-!!! note
-    Você pode salvar antecipadamente o arquivo de rótulos e o arquivo de áudio de referência na pasta `references` do diretório principal (que você precisa criar), para que possa chamá-los diretamente na WebUI.
-    
-!!! note
-    É possível usar variáveis de ambiente do Gradio, como `GRADIO_SHARE`, `GRADIO_SERVER_PORT`, `GRADIO_SERVER_NAME`, para configurar a WebUI.
-
-Divirta-se!
+Após o servidor ser iniciado, você pode acessá-lo através do navegador no seguinte endereço:
+`http://localhost:8888/ui`

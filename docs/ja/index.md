@@ -1,214 +1,192 @@
-# Fish Speech の紹介
+<div align="center">
+<h1>Fish Speech</h1>
 
-<div>
-<a target="_blank" href="https://discord.gg/Es5qTB9BcN">
-<img alt="Discord" src="https://img.shields.io/discord/1214047546020728892?color=%23738ADB&label=Discord&logo=discord&logoColor=white&style=flat-square"/>
-</a>
-<a target="_blank" href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=jCKlUP7QgSm9kh95UlBoYv6s1I-Apl1M&authKey=xI5ttVAp3do68IpEYEalwXSYZFdfxZSkah%2BctF5FIMyN2NqAa003vFtLqJyAVRfF&noverify=0&group_code=593946093">
-<img alt="QQ" src="https://img.shields.io/badge/QQ Group-%2312B7F5?logo=tencent-qq&logoColor=white&style=flat-square"/>
-</a>
-<a target="_blank" href="https://hub.docker.com/r/fishaudio/fish-speech">
-<img alt="Docker" src="https://img.shields.io/docker/pulls/fishaudio/fish-speech?style=flat-square&logo=docker"/>
+<p><a href="../en/">English</a> | <a href="../zh/">简体中文</a> | <a href="../pt/">Portuguese</a> | <strong>日本語</strong> | <a href="../ko/">한국어</a> | <a href="../ar/">العربية</a> | <a href="../es/">Español</a></p>
+
+<a href="https://www.producthunt.com/products/fish-speech?embed=true&utm_source=badge-top-post-badge&utm_medium=badge&utm_source=badge-fish&#0045;audio&#0045;s1" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1023740&theme=light&period=daily&t=1761164814710" alt="Fish&#0032;Audio&#0032;S1 - Expressive&#0032;Voice&#0032;Cloning&#0032;and&#0032;Text&#0045;to&#0045;Speech | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+<a href="https://trendshift.io/repositories/7014" target="_blank">
+    <img src="https://trendshift.io/api/badge/repositories/7014" alt="fishaudio%2Ffish-speech | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
 </a>
 </div>
 
-!!! warning
-    私たちは、コードベースの違法な使用について一切の責任を負いません。お住まいの地域の DMCA（デジタルミレニアム著作権法）およびその他の関連法を参照してください。 <br/>
-    このコードベースとモデルは、CC-BY-NC-SA-4.0 ライセンス下でリリースされています。
+<br>
 
-<p align="center">
-   <img src="../assets/figs/diagram.png" width="75%">
-</p>
+<div align="center">
+    <img src="https://count.getloli.com/get/@fish-speech?theme=asoul" /><br>
+</div>
 
-## 要件
+<br>
 
-- GPU メモリ: 4GB（推論用）、8GB（ファインチューニング用）
-- システム: Linux、Windows
+<div align="center">
+    <a target="_blank" href="https://discord.gg/Es5qTB9BcN">
+        <img alt="Discord" src="https://img.shields.io/discord/1214047546020728892?color=%23738ADB&label=Discord&logo=discord&logoColor=white&style=flat-square"/>
+    </a>
+    <a target="_blank" href="https://hub.docker.com/r/fishaudio/fish-speech">
+        <img alt="Docker" src="https://img.shields.io/docker/pulls/fishaudio/fish-speech?style=flat-square&logo=docker"/>
+    </a>
+    <a target="_blank" href="https://pd.qq.com/s/bwxia254o">
+      <img alt="QQ Channel" src="https://img.shields.io/badge/QQ-blue?logo=tencentqq">
+    </a>
+</div>
 
-## Windowsセットアップ
+<div align="center">
+    <a target="_blank" href="https://huggingface.co/fishaudio/s2">
+        <img alt="HuggingFace Model" src="https://img.shields.io/badge/🤗%20-models-orange"/>
+    </a>
+    <a target="_blank" href="https://fish.audio/blog/fish-audio-open-sources-s2/">
+        <img alt="Fish Audio Blog" src="https://img.shields.io/badge/Blog-Fish_Audio_S2-1f7a8c?style=flat-square&logo=readme&logoColor=white"/>
+    </a>
+    <a target="_blank" href="https://arxiv.org/abs/2603.08823">
+        <img alt="Paper | Technical Report" src="https://img.shields.io/badge/Paper-Technical_Report-b31b1b?style=flat-square"/>
+    </a>
+</div>
 
-プロフェッショナルなWindowsユーザーは、WSL2またはDockerを使用してコードベースを実行することを検討してください。
+!!! info "ライセンス通知"
+    このコードベースおよび関連するモデルの重みは **FISH AUDIO RESEARCH LICENSE** の下でリリースされています。詳細は [LICENSE](https://github.com/fishaudio/fish-speech/blob/main/LICENSE) を参照してください。
 
-```bash
-# Python 3.10の仮想環境を作成（virtualenvも使用可能）
-conda create -n fish-speech python=3.10
-conda activate fish-speech
+!!! warning "法的免責事項"
+    私たちは、コードベースのいかなる違法な使用に対しても責任を負いません。DMCA およびその他の関連法に関する現地の規制を参照してください。
 
-# PyTorchをインストール
-pip3 install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu121
+## クイックスタート
 
-# fish-speechをインストール
-pip3 install -e .
+### まずはドキュメントから
 
-# (アクセラレーションを有効にする) triton-windowsをインストール
-pip install https://github.com/AnyaCoder/fish-speech/releases/download/v0.1.0/triton_windows-0.1.0-py3-none-any.whl
-```
+Fish Audio S2 の公式ドキュメントです。以下からすぐに始められます。
 
-非プロフェッショナルなWindowsユーザーは、Linux環境なしでプロジェクトを実行するための以下の基本的な方法を検討できます（モデルコンパイル機能、つまり`torch.compile`を使用可能）：
+- [インストール](https://speech.fish.audio/ja/install/)
+- [コマンドライン推論](https://speech.fish.audio/ja/inference/)
+- [WebUI 推論](https://speech.fish.audio/ja/inference/)
+- [サーバー推論](https://speech.fish.audio/ja/server/)
+- [Docker セットアップ](https://speech.fish.audio/ja/install/)
 
-1. プロジェクトパッケージを解凍する。
-2. `install_env.bat`をクリックして環境をインストールする。
-3. コンパイルアクセラレーションを有効にしたい場合は、次のステップに従ってください：
-    1. 以下のリンクからLLVMコンパイラをダウンロード：
-        - [LLVM-17.0.6（公式サイトのダウンロード）](https://huggingface.co/fishaudio/fish-speech-1/resolve/main/LLVM-17.0.6-win64.exe?download=true)
-        - [LLVM-17.0.6（ミラーサイトのダウンロード）](https://hf-mirror.com/fishaudio/fish-speech-1/resolve/main/LLVM-17.0.6-win64.exe?download=true)
-        - `LLVM-17.0.6-win64.exe`をダウンロードした後、ダブルクリックしてインストールし、適切なインストール場所を選択し、最も重要なのは`Add Path to Current User`オプションを選択して環境変数を追加することです。
-        - インストールが完了したことを確認する。
-    2. 欠落している .dll の問題を解決するため、Microsoft Visual C++ Redistributable をダウンロードしてインストールする：
-        - [MSVC++ 14.40.33810.0 ダウンロード](https://aka.ms/vs/17/release/vc_redist.x64.exe)
-    3. Visual Studio Community Editionをダウンロードして、MSVC++ビルドツールを取得し、LLVMのヘッダーファイルの依存関係を解決する：
-        - [Visual Studio ダウンロード](https://visualstudio.microsoft.com/ja/downloads/)
-        - Visual Studio Installerをインストールした後、Visual Studio Community 2022をダウンロード。
-        - 下記のように、`Modify`ボタンをクリックし、`C++によるデスクトップ開発`オプションを選択してダウンロード。
-        - <img src="../assets/figs/VS_1.jpg"/>
-    4. [CUDA Toolkit 12.x](https://developer.nvidia.com/cuda-12-1-0-download-archive?target_os=Windows&target_arch=x86_64)をダウンロードしてインストールする。
-4. `start.bat`をダブルクリックして、トレーニング推論WebUI管理インターフェースを開きます。必要に応じて、以下に示すように`API_FLAGS`を修正できます。
+> [!IMPORTANT]
+> **SGLang サーバーについては [SGLang-Omni README](https://github.com/sgl-project/sglang-omni/blob/main/sglang_omni/models/fishaudio_s2_pro/README.md) を参照してください。**
 
-
-!!! info "オプション"
-    推論WebUIを起動しますか？
-    プロジェクトのルートディレクトリにある `API_FLAGS.txt` ファイルを編集し、最初の3行を次のように変更します：
-    ```
-    --infer
-    # --api
-    # --listen ...
-    ...
-    ```
-
-!!! info "オプション"
-    APIサーバーを起動しますか？
-    プロジェクトのルートディレクトリにある `API_FLAGS.txt` ファイルを編集し、最初の3行を次のように変更します：
-    ```
-    # --infer
-    --api
-    --listen ...
-    ...
-    ```
-
-!!! info "オプション"
-    `run_cmd.bat` をダブルクリックして、このプロジェクトの conda/python コマンドライン環境に入ります。
-
-
-
-## Linux セットアップ
-
-詳細については、[pyproject.toml](../../pyproject.toml)  を参照してください。
-```bash
-# python 3.10の仮想環境を作成します。virtualenvも使用できます。
-conda create -n fish-speech python=3.10
-conda activate fish-speech
-
-# pytorchをインストールします。
-pip3 install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
-
-# (Ubuntu / Debianユーザー) sox + ffmpegをインストールします。
-apt install libsox-dev ffmpeg
-
-# (Ubuntu / Debianユーザー) pyaudio をインストールします。
-apt install build-essential \
-    cmake \
-    libasound-dev \
-    portaudio19-dev \
-    libportaudio2 \
-    libportaudiocpp0
-    
-# fish-speechをインストールします。
-pip3 install -e .[stable]
+### LLM Agent 向け
 
 ```
-
-## macos setup
-
-推論をMPS上で行う場合は、`--device mps`フラグを追加してください。
-推論速度の比較は[こちらのPR](https://github.com/fishaudio/fish-speech/pull/461#issuecomment-2284277772)を参考にしてください。
-
-!!! warning
-    AppleSiliconのデバイスでは、compileオプションに正式に対応していませんので、推論速度が向上する保証はありません。
-
-```bash
-# create a python 3.10 virtual environment, you can also use virtualenv
-conda create -n fish-speech python=3.10
-conda activate fish-speech
-# install pytorch
-pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
-# install fish-speech
-pip install -e .[stable]
+https://speech.fish.audio/ja/install/ の手順に従って、Fish Audio S2 をインストール・設定してください。
 ```
 
-## Docker セットアップ
+## Fish Audio S2
+**オープンソースおよびクローズドソースの中で最も優れたテキスト読み上げシステム**
 
-1. NVIDIA Container Toolkit のインストール：
+Fish Audio S2 は [Fish Audio](https://fish.audio/) が開発した最新モデルです。約 50 言語・1,000 万時間超の音声データで学習され、強化学習アラインメントと Dual-Autoregressive アーキテクチャを組み合わせることで、自然でリアルかつ感情表現豊かな音声を生成します。
 
-    Docker で GPU を使用してモデルのトレーニングと推論を行うには、NVIDIA Container Toolkit をインストールする必要があります：
+S2 は `[laugh]`、`[whispers]`、`[super happy]` といった自然言語タグで、韻律や感情を文中の任意位置で細かく制御できます。さらに、マルチスピーカー生成とマルチターン生成にもネイティブ対応しています。
 
-    Ubuntu ユーザーの場合：
+ライブデモは [Fish Audio ウェブサイト](https://fish.audio/) から、詳細は [ブログ記事](https://fish.audio/blog/fish-audio-open-sources-s2/) と [技術レポート](https://arxiv.org/abs/2603.08823) をご覧ください。
 
-    ```bash
-    # リポジトリの追加
-    curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-        && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    # nvidia-container-toolkit のインストール
-    sudo apt-get update
-    sudo apt-get install -y nvidia-container-toolkit
-    # Docker サービスの再起動
-    sudo systemctl restart docker
-    ```
+### モデルバリアント
 
-    他の Linux ディストリビューションを使用している場合は、以下のインストールガイドを参照してください：[NVIDIA Container Toolkit Install-guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)。
+| モデル | サイズ | 利用可能性 | 説明 |
+|------|------|-------------|-------------|
+| S2-Pro | 4B パラメータ | [HuggingFace](https://huggingface.co/fishaudio/s2-pro) | 品質と安定性を最大化したフル機能のフラッグシップモデル |
 
-2. fish-speech イメージのプルと実行
+モデルの詳細は[技術レポート](https://arxiv.org/abs/2411.01156)をご参照ください。
 
-    ```shell
-    # イメージのプル
-    docker pull fishaudio/fish-speech:latest-dev
-    # イメージの実行
-    docker run -it \
-        --name fish-speech \
-        --gpus all \
-        -p 7860:7860 \
-        fishaudio/fish-speech:latest-dev \
-        zsh
-    # 他のポートを使用する場合は、-p パラメータを YourPort:7860 に変更してください
-    ```
+## ベンチマーク結果
 
-3. モデルの依存関係のダウンロード
+| ベンチマーク | Fish Audio S2 |
+|------|------|
+| Seed-TTS Eval — WER（中国語） | **0.54%**（全体最良） |
+| Seed-TTS Eval — WER（英語） | **0.99%**（全体最良） |
+| Audio Turing Test（指示あり） | **0.515** 事後平均値 |
+| EmergentTTS-Eval — 勝率 | **81.88%**（全体最高） |
+| Fish Instruction Benchmark — TAR | **93.3%** |
+| Fish Instruction Benchmark — 品質 | **4.51 / 5.0** |
+| 多言語（MiniMax Testset）— 最良 WER | **24 言語中 11 言語** |
+| 多言語（MiniMax Testset）— 最良 SIM | **24 言語中 17 言語** |
 
-    Docker コンテナ内のターミナルにいることを確認し、huggingface リポジトリから必要な `vqgan` と `llama` モデルをダウンロードします。
+Seed-TTS Eval では、S2 はクローズドソースを含む全評価モデルの中で最小 WER を達成しました：Qwen3-TTS（0.77/1.24）、MiniMax Speech-02（0.99/1.90）、Seed-TTS（1.12/2.25）。Audio Turing Test では 0.515 を記録し、Seed-TTS（0.417）比で 24%、MiniMax-Speech（0.387）比で 33% 上回りました。EmergentTTS-Eval では、副言語情報（91.61%）、疑問文（84.41%）、統語的複雑性（83.39%）で特に高い成績を示しています。
 
-    ```bash
-    huggingface-cli download fishaudio/fish-speech-1.4 --local-dir checkpoints/fish-speech-1.4
-    ```
+## ハイライト
 
-4. 環境変数の設定と WebUI へのアクセス
+<img src="../assets/totalability.png" width=200%>
 
-    Docker コンテナ内のターミナルで、`export GRADIO_SERVER_NAME="0.0.0.0"` と入力して、外部から Docker 内の gradio サービスにアクセスできるようにします。
-    次に、Docker コンテナ内のターミナルで `python tools/webui.py` と入力して WebUI サービスを起動します。
+### 自然言語による細粒度インライン制御
 
-    WSL または MacOS の場合は、[http://localhost:7860](http://localhost:7860) にアクセスして WebUI インターフェースを開くことができます。
+Fish Audio S2 では、テキスト内の特定の単語やフレーズ位置に自然言語の指示を直接埋め込むことで、音声生成を局所的に制御できます。固定の事前定義タグに依存するのではなく、S2 は [whisper in small voice]、[professional broadcast tone]、[pitch up] のような自由形式のテキスト記述を受け付け、単語レベルで表現をオープンエンドに制御できます。
 
-    サーバーにデプロイしている場合は、localhost をサーバーの IP に置き換えてください。
+### 二重自己回帰（Dual-Autoregressive）アーキテクチャ
 
-## 変更履歴
+S2 はデコーダー専用 Transformer と RVQ ベースの音声コーデック（10 codebooks、約 21 Hz）を組み合わせています。Dual-AR は生成を 2 段階に分割します。
 
-- 2024/09/10: Fish-Speech を Ver.1.4 に更新し、データセットのサイズを増加させ、quantizer n_groups を 4 から 8 に変更しました。
-- 2024/07/02: Fish-Speech を Ver.1.2 に更新し、VITS デコーダーを削除し、ゼロショット能力を大幅に強化しました。
-- 2024/05/10: Fish-Speech を Ver.1.1 に更新し、VITS デコーダーを実装して WER を減少させ、音色の類似性を向上させました。
-- 2024/04/22: Fish-Speech Ver.1.0 を完成させ、VQGAN および LLAMA モデルを大幅に修正しました。
-- 2023/12/28: `lora`微調整サポートを追加しました。
-- 2023/12/27: `gradient checkpointing`、`causual sampling`、および`flash-attn`サポートを追加しました。
-- 2023/12/19: webui および HTTP API を更新しました。
-- 2023/12/18: 微調整ドキュメントおよび関連例を更新しました。
-- 2023/12/17: `text2semantic`モデルを更新し、自由音素モードをサポートしました。
-- 2023/12/13: ベータ版をリリースし、VQGAN モデルおよび LLAMA に基づく言語モデル（音素のみサポート）を含みます。
+- **Slow AR** は時間軸方向に動作し、主となる semantic codebook を予測。
+- **Fast AR** は各時刻で残り 9 個の residual codebook を生成し、細かな音響ディテールを復元。
 
-## 謝辞
+この非対称設計（時間軸 4B パラメータ、深さ軸 400M パラメータ）により、音質を保ちながら推論効率を高めています。
+
+### 強化学習アラインメント
+
+S2 は後学習アラインメントに Group Relative Policy Optimization（GRPO）を採用しています。学習データのフィルタリングとアノテーションに使った同一モデル群を、そのまま RL の報酬モデルとして再利用することで、事前学習データ分布と事後学習目的のミスマッチを抑制しています。報酬信号には、意味的正確性、指示追従性、音響的選好スコア、音色類似度が含まれます。
+
+### SGLang による本番向けストリーミング
+
+Dual-AR は構造的に標準的な自己回帰 LLM と同型のため、S2 は SGLang の LLM 向け最適化をそのまま活用できます。たとえば continuous batching、paged KV cache、CUDA graph replay、RadixAttention ベースの prefix caching です。
+
+単一の NVIDIA H200 GPU での実測:
+
+- **RTF（Real-Time Factor）:** 0.195
+- **初回音声出力までの時間:** 約 100 ms
+- **スループット:** RTF 0.5 未満を維持しつつ 3,000+ acoustic tokens/s
+
+### 多言語サポート
+
+Fish Audio S2 は、音素や言語固有の前処理を必要とせずに、高品質な多言語テキスト読み上げをサポートします。以下を含みます：
+
+**英語、中国語、日本語、韓国語、アラビア語、ドイツ語、フランス語...**
+
+**さらに多く！**
+
+リストは常に拡大しています。最新のリリースについては [Fish Audio](https://fish.audio/) を確認してください。
+
+### ネイティブなマルチスピーカー生成
+
+<img src="../assets/chattemplate.png" width=200%>
+
+Fish Audio S2 では、ユーザーが複数のスピーカーを含む参照オーディオをアップロードでき、モデルは `<|speaker:i|>` トークンを介して各スピーカーの特徴を処理します。その後、スピーカーIDトークンを使用してモデルのパフォーマンスを制御し、1回の生成で複数のスピーカーを含めることができます。以前のように各スピーカーに対して個別に参照オーディオをアップロードして音声を生成する必要はもうありません。
+
+### マルチターン対話生成
+
+モデルのコンテキストの拡張により、以前の情報を使用して後続の生成されたコンテンツの表現力を向上させ、コンテンツの自然さを高めることができるようになりました。
+
+### 高速音声クローニング
+
+Fish Audio S2 は、短い参照サンプル（通常10〜30秒）を使用した正確な音声クローニングをサポートしています。モデルは音色、話し方、感情的な傾向を捉え、追加の微調整なしでリアルで一貫したクローン音声を生成します。
+SGLang サーバーの利用については [SGLang-Omni README](https://github.com/sgl-project/sglang-omni/blob/main/sglang_omni/models/fishaudio_s2_pro/README.md) を参照してください。
+
+---
+
+## クレジット
 
 - [VITS2 (daniilrobnikov)](https://github.com/daniilrobnikov/vits2)
 - [Bert-VITS2](https://github.com/fishaudio/Bert-VITS2)
 - [GPT VITS](https://github.com/innnky/gpt-vits)
 - [MQTTS](https://github.com/b04901014/MQTTS)
 - [GPT Fast](https://github.com/pytorch-labs/gpt-fast)
-- [Transformers](https://github.com/huggingface/transformers)
 - [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
+- [Qwen3](https://github.com/QwenLM/Qwen3)
+
+## 技術レポート
+```bibtex
+@misc{fish-speech-v1.4,
+      title={Fish-Speech: Leveraging Large Language Models for Advanced Multilingual Text-to-Speech Synthesis},
+      author={Shijia Liao and Yuxuan Wang and Tianyu Li and Yifan Cheng and Ruoyi Zhang and Rongzhi Zhou and Yijin Xing},
+      year={2024},
+      eprint={2411.01156},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD},
+      url={https://arxiv.org/abs/2411.01156},
+}
+
+@misc{liao2026fishaudios2technical,
+      title={Fish Audio S2 Technical Report}, 
+      author={Shijia Liao and Yuxuan Wang and Songting Liu and Yifan Cheng and Ruoyi Zhang and Tianyu Li and Shidong Li and Yisheng Zheng and Xingwei Liu and Qingzheng Wang and Zhizhuo Zhou and Jiahua Liu and Xin Chen and Dawei Han},
+      year={2026},
+      eprint={2603.08823},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD},
+      url={https://arxiv.org/abs/2603.08823}, 
+}
+```
